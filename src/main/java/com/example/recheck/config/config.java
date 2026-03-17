@@ -16,7 +16,7 @@ public class config {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:4200",
-                "https://usermanagementsystem-cw5f.onrender.com",
+                "https://taskflows-rk35.onrender.com",
                 "https://nonproducing-contumeliously-kane.ngrok-free.dev"));
         config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
