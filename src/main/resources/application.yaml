@@ -1,16 +1,3 @@
-#spring:
-#  application:
-#    name: recheck
-#
-##  ai:
-##    deepseek:
-##      api-key: sk-0cb766911e3444b582907df444c346bd
-##
-##      chat:
-##        options:
-##          model: deepseek-chat
-##          temperature: 0.8
-#
 spring:
   application:
     name: recheck
@@ -19,7 +6,6 @@ spring:
     openai:
       base-url: https://openrouter.ai/api
       api-key: ${OPENROUTER_API_KEY}
-
       chat:
         options:
           model: deepseek/deepseek-v3.2
