@@ -19,30 +19,40 @@ import java.util.Objects;
 public class DeepSeekController {
 
     private final OpenAiChatModel chatModel;
-
     @PostMapping("/ai/generate")
-//    public AiResponse generate(@RequestParam(defaultValue = "Explain Hello World in Java") String message) {
-    public AiResponse generate(@RequestBody AiRequest message){
+    public AiResponse generate(@RequestBody AiRequest request) { // Renamed parameter to 'request' for clarity
 
         // 1. Create a converter for our record
         var converter = new BeanOutputConverter<>(AiResponse.class);
 
-        // 2. Build a prompt template that tells the AI exactly what format to use
+        // 2. Updated Prompt Template: Explicitly separate History and New Question
         String userPrompt = """
+                You are a helpful AI Assistant. Use the provided history to give better, context-aware responses.
+                
+                CONVERSATION HISTORY:
+                {context}
+                
+                USER'S LATEST MESSAGE:
                 {message}
+                
+                FORMAT INSTRUCTIONS:
                 {format}
                 """;
 
         PromptTemplate promptTemplate = new PromptTemplate(userPrompt);
+
+        // 3. Inject BOTH the context and the message into the prompt
         Prompt prompt = promptTemplate.create(Map.of(
-                "message", message,
-                "format", converter.getFormat() // This injects the JSON schema instructions
+                "context", request.getContext() == null || request.getContext().isEmpty() ? "No previous history." : request.getContext(),
+                "message", request.getMessage(),
+                "format", converter.getFormat()
         ));
 
-        // 3. Call the model and convert the result
+        // 4. Call the model and convert the result
         ChatResponse response = chatModel.call(prompt);
         return converter.convert(Objects.requireNonNull(response.getResult().getOutput().getText()));
     }
+
 
     @GetMapping("/ai/generateStream")
     public Flux<ChatResponse> generateStream(
